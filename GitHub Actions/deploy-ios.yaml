@@ -1,0 +1,28 @@
+# This GitHub actions workflow defines steps to build and deploy Reactive Native IOS App
+---
+name: vHelpU IOS App on
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '14'
+      - name: Install Expo CLI and EAS CLI
+        run: npm install -g expo-cli @expo/eas-cli
+      - name: Log in to EXPO
+        run:  expo login -u ${{secrets.EXPO_USERNAME}}  -p ${{secrets.EXPO_PASSWORD}}
+      - name: Build IOS app
+        run:  expo eas build --platform ios
+      - name: Submit App to eas
+        run:  expo eas submit --non-interactive
+      - name: Publish App to App Store
+        run:  expo publish  --non-interactive
+      
