@@ -1,0 +1,28 @@
+# This configuration file creates workflow to React Native build and deploy mobile app in Andriod Play Store
+---
+name: vHelpU Andriod app workflow
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install EXPO Cli globally
+        run: npm install -g expo-cli @expo/eas-cli
+      - name: Log in to Expo
+        run: expo login -u ${{secrets.EXPO_USERNAME}} -p ${{secrets.EXPO_PASSWORD}}
+      - name: Build Andriod app
+        run: expo eas build --platform andriod
+      - name: Depoly App to EAS
+        run: expo eas submit --non-interactive
+      - name: Publish App from EAS
+        run: expo publish --non-interactive
+
