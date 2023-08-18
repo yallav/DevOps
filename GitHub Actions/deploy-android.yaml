@@ -1,4 +1,4 @@
-# This configuration file creates workflow to React Native build and deploy mobile app in Andriod Play Store
+# This configuration file creates workflow to React Native build and publish mobile app in Play Store
 ---
 name: vHelpU Andriod app workflow
 on:

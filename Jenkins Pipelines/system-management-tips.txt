@@ -1,0 +1,5 @@
+Problem - Automatic shutdown after no activity
+Solution - 
+    Edit the /etc/systemd/logind.conf
+    Uncomment the lines - IdleAction=ignore && IdleActionSec=600min
+

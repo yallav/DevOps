@@ -1,7 +1,7 @@
 
 1. Building an Android app using GitHub Actions and deploying it using the Expo Application Services (EAS) CLI involves several steps. 
 
-    EAS CLI simplifies the process of building and deploying Expo apps. Here's an outline of the process:
+EAS CLI simplifies the process of building and deploying Expo apps. Here's an outline of the process:
 
 * GitHub Repository - 
     Create a GitHub repository for your React Native application if you haven't already.

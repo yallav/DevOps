@@ -1,6 +1,6 @@
 # This GitHub actions workflow defines steps to build and deploy Reactive Native IOS App
 ---
-name: vHelpU IOS App on
+name: vHelpU IOS App workflow
 on:
   push:
     branches:

@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs "node"
+    }
+
+    stages {
+        stage('Clean WS') {
+            steps {
+                echo 'Hello World'
+                cleanWs()
+            }
+        }
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'GitHubCred', url: 'https://github.com/yallav/vhelpu']]])
+            }
+        }
+        stage('Build'){
+            steps {
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
+        stage('Test'){
+            steps {
+                sh 'npm test'
+                sh 'whoami'
+            }
+        }
+        stage('Deploy'){
+            steps {
+                sh "sudo rm -rf /var/www/jenkins-react-app"
+                sh "sudo cp -r ${WORKSPACE}/build/ /var/www/jenkins-react-app/"
+            }
+        }
+        stage('Notify'){
+            steps {
+                slackSend channel: 'devops', message: "Build Deployed: ${env.JOB_NAME} ${env.BUILD_NUMBER} - ${env.BUILD_URL}"
+            }
+        }
+    }
+}
