@@ -1,0 +1,44 @@
+name: Deploy Spring Boot App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+
+      - name: Configure SSH keys
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Install dependencies and build
+        run: ./gradlew build
+
+      - name: Deploy to EC2 instances
+        run: |
+          for ip in $EC2_INSTANCE_IPS; do
+            echo "Deploying to $ip"
+            scp -r build/* ec2-user@$ip:/home/ec2-user/myapp/
+            ssh ec2-user@$ip "sudo systemctl restart vHelpu-springboot.service"
+          done
+
+    env:
+      EC2_INSTANCE_IPS: |
+        192.168.2.30
+        192.168.3.30
+        10.45.24.10
+        10.45.25.10

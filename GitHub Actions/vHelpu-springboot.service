@@ -1,0 +1,12 @@
+[Unit]
+Description=vHelpU Spring Boot Application
+
+[Service]
+User=ec2-user
+WorkingDirectory=/home/ec2-user/myapp
+ExecStart=/usr/bin/java -jar vhelpu.jar ""
+Restart=always
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

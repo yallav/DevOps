@@ -9,7 +9,7 @@
 # After changing the value, restart the SSH service on remote host - systemctl restart ssh
 
 #!/bin/bash
-REMOTE_USERNAME="root"
+REMOTE_USERNAME="ec2-user"
 REMOTE_HOST="192.168.4.10"
 
 ssh-keygen -t rsa -b 4096
