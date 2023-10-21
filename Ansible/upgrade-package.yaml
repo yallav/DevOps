@@ -1,0 +1,24 @@
+---
+- name: Upgrade systems
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    - centos_version: '8.2'
+    - ubuntu_version: 'Ubuntu 18.04.5 TLS'
+
+  tasks:
+    - name: Dispaly system details
+      debug:
+        msg: "{{item}}"
+      loop:
+        - "{{ansible_hostname}}"
+        - "{{ansible_distribution}}"
+        - "{{ansible_distribution_version}}"
+    - name: Upgrade system packages
+      package:
+        name: "*"
+        state: latest
+      when: >
+        (ansible_distribution == 'CentOS' and ansible_distribution_version != centos_version) or
+        (ansible_distribution == 'Ubuntu' and ansible_distribution_version != ubuntu_version)

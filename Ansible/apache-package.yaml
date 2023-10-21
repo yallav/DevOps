@@ -1,0 +1,15 @@
+---
+- name: Install Apache web server on CentOS and Ubuntu play
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install Apache webserver package
+      package:
+        name: "{{apache_package}}"
+        state: latest
+    - name: Copy the web content
+      copy:
+        src: web/*
+        dest: /var/www/html
+        directory_mode: true

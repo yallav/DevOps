@@ -1,0 +1,10 @@
+---
+- name: Copy the motd file to /etc/motd
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Copy /etc/motd
+      template:
+        src: motd.j2
+        dest: /etc/motd

@@ -1,0 +1,11 @@
+---
+- name: Manage the /etc/motd file
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Copy the motd file
+      copy: 
+        content: |
+          The system is managed by ansible
+        dest: /etc/motd

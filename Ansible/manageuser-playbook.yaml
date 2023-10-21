@@ -1,0 +1,39 @@
+---
+- name: Manage user account play
+  hosts: 10.23.4.21
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Update user account
+      user:
+        name: tux
+        shell: /bin/bash
+        state: present
+        generate_ssh_key: true
+    - name: Enable password less access
+      copy:
+        src: tux
+        dest: /etc/sudoers.d/tux
+- name: Create dedicate ansible user account play
+  hosts: all
+  become: true
+  remote_user: tux
+  gather_facts: true
+  tasks:
+    - name: Create user account
+      user:
+        name: ansible
+        shell: /bin/bash
+        state: present
+        password: "{{'Password1' | password_sha('sha512')}}"
+        udpate_password: on_create
+    - name: Install key
+      authorized_key:
+        user: ansible
+        state: present
+        manage_dir: true
+        key: "{{lookup('file','/home/tux/.ssh/id_rsa.pub')}}"
+    - name: Enable password less access
+      copy:
+        src: ansible
+        dest: /etc/sudoers.d/ansible

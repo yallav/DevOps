@@ -1,0 +1,67 @@
+---
+- name: Manage apache deployment
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install apache package
+      package:
+        name: "{{apache_package}}"
+        state: present
+    - name: Start and enable apache web server
+      service:
+        name: "{{apache_package}}"
+        state: started
+        enabled: true
+    - name: Copy web content
+      copy:
+        src: web/*
+        dest: /var/www/html/
+        directory_mode: true
+    - name: Custom web content
+      template:
+        src: server.j2
+        dest: /var/www/html/server.html
+    - name: Install firewall package
+      package:
+        name: "{{firewall_package}}"
+        state: present
+    - name: Firewall service
+      service:
+        name: "{{firewall_package}}"
+        state: started
+        enabled: true
+    - name: UFW open ports
+      ufw:
+        policy: deny
+        rule: allow
+        port: "{{item}}"
+        proto: tcp
+        state: enabled
+      loop:
+        - "80"
+        - "22"
+      when: ansible_distribution == 'Ubuntu'
+    - name: Firewalld open ports
+      firewalld:
+        service: "{{item}}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+      loop:
+        - "http"
+        - "ssh"
+      when: ansible_distribution == 'CentOS'
+    - name: Update apache configuration
+      lineinfile:
+        path: "{{apache_config}}"
+        line: "ServerName {{ansible_hostname}}"
+        insertafter: "#ServerName"
+      notify: restart_apache
+    - name: 
+  handlers:
+    - name: restart_apache
+      service:
+        name: "{{apache_package}}"
+        state: restarted
+  

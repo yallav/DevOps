@@ -1,0 +1,23 @@
+---
+- name: Manage SSHD
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Ensure SSHD service is running and enabled
+      service:
+        name: sshd
+        state: starated
+        enable: true
+    - name: Disable remote root login for SSHD service
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        insertafter: '#PermitRootLogin'
+        line: 'PermitRootLogin no'
+      notify: restart_sshd
+  handlers:
+    - name: restart_sshd
+      service:
+        name: sshd
+        state: restarted

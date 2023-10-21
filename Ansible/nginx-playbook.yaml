@@ -1,0 +1,17 @@
+---
+- name: Masking nginx server
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Gather service facts
+      service_facts:
+    - name: Mask nginx server
+      systemd:
+        name: nginx
+        state: stopped
+        masked: true
+      when: "'nginx.service' in ansible_facts.services"
+    - name: Is apache service available?
+      debug:
+        msg: "'apache2.service' in ansible_facts.services"
